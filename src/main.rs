@@ -1,12 +1,12 @@
 #[macro_use] extern crate rocket;
-use rocket::serde::{Deserialize, json::Json};
 
+use rocket::{Rocket, Build};
+use rocket::serde::{Deserialize, json::Json};
 
 #[derive(Deserialize)]
 struct Project<'r> {
     id: &'r str
 }
-// Post project
 
 #[post("/", data = "<project>")]
 fn backup_project(project: Json<Project>) -> &str {
@@ -14,7 +14,7 @@ fn backup_project(project: Json<Project>) -> &str {
 }
 
 #[launch]
-fn rocket() -> _ {
+fn rocket() -> Rocket<Build> {
     rocket::build()
         .mount("/project", routes![backup_project])
 }
