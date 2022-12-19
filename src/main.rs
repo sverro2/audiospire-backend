@@ -1,27 +1,30 @@
 #[macro_use] extern crate rocket;
 
-use rocket::{Rocket, Build};
+use rocket::futures::lock::Mutex;
+use rocket::{Rocket, Build, State};
 use rocket::serde::{Deserialize, json::Json};
 use std::collections::HashMap;
-
-#[derive(Deserialize)]
-struct Project<'a> {
-    id: &'a str
+#[derive(Deserialize, Clone)]
+struct Project {
+    id: String
 }
 
-struct GlobalState<'a>{
-    projectStore: HashMap<&'a str, Project<'a>>
+struct GlobalState{
+    project_store: Mutex<HashMap<String, Project>>
 }
 
 #[post("/", data = "<project>")]
-fn backup_project(project: Json<Project>) -> &str {
-    project.id
+async fn backup_project(project: Json<Project>, state: & State<GlobalState>) -> String {
+   
+        let map = &mut *state.project_store.lock().await;
+        map.insert(project.id.clone(), project.0.clone());
+        project.id.clone() 
 }
 
-#[get("/<project_name>")]
-fn restore_project(project_name: &str) -> &str {
-
-    project_name
+#[get("/<project_id>")]
+async fn restore_project<'a>(project_id: &str, state: &'a State<GlobalState>) -> String {
+    let map = state.project_store.lock().await;
+    map.get(project_id).unwrap().id.clone()
 }
 
 
@@ -35,5 +38,5 @@ fn restore_project(project_name: &str) -> &str {
 fn rocket() -> Rocket<Build> {
     rocket::build()
         .mount("/project", routes![backup_project, restore_project])
-        .manage(GlobalState{projectStore: HashMap::new()})
+        .manage(GlobalState{project_store: Mutex::from(HashMap::new())})
 }
