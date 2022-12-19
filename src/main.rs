@@ -22,17 +22,10 @@ async fn backup_project(project: Json<Project>, state: & State<GlobalState>) -> 
 }
 
 #[get("/<project_id>")]
-async fn restore_project<'a>(project_id: &str, state: &'a State<GlobalState>) -> String {
+async fn restore_project(project_id: &str, state: &State<GlobalState>) -> String {
     let map = state.project_store.lock().await;
     map.get(project_id).unwrap().id.clone()
 }
-
-
-
-// #[put("/media", data = "<project>")]
-// fn backup_project(project: Json<Project>) -> &str {
-//     project.id
-// }
 
 #[launch]
 fn rocket() -> Rocket<Build> {
