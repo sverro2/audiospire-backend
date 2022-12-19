@@ -9,8 +9,8 @@ struct Project<'a> {
     id: &'a str
 }
 
-struct GlobalState<'a, 'b>{
-    projectStore: HashMap<&'b str, Project<'a>>
+struct GlobalState<'a>{
+    projectStore: HashMap<&'a str, Project<'a>>
 }
 
 #[post("/", data = "<project>")]
