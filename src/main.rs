@@ -32,13 +32,11 @@ async fn backup_project(project: Json<Project>, state: &State<GlobalState>) -> s
 
 #[get("/<project_id>")]
 async fn restore_project(project_id: &str, state: &State<GlobalState>) -> Option<Json<Project>> {
-    let map = state.project_store.lock().await;
+    let project_store = state.project_store.lock().await;
 
-    if map.contains_key(project_id) {
-        Some(Json(map.get(project_id).unwrap().clone()))
-    } else {
-        None
-    }
+    project_store.get(project_id).map(|project| {
+        Json(project.clone())
+    })
 }
 
 #[post("/<project_id>/<media_id>", data = "<media>")]
@@ -57,18 +55,14 @@ async fn backup_media(
 }
 
 #[get("/<project_id>/<media_id>")]
-async fn restore_media(
+async fn restore_media<'a>(
     project_id: &str, 
     media_id: &str, 
-    state: &State<GlobalState>
+    state: &'a State<GlobalState>
 ) -> Option<Vec<u8>> {
-    let map = &mut *state.media_store.lock().await;
+    let media_store = &mut *state.media_store.lock().await;
 
-    if map.contains_key(media_id) {
-        Some(map.get(media_id).unwrap().clone())
-    } else {
-        None
-    }
+    media_store.get(media_id).map(Vec::clone)
 }
 
 #[launch]
