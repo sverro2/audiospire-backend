@@ -7,6 +7,16 @@ edition = "2021"
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
+futures-util = "0.3.25"
+
+[dependencies.sqlx]
+version = "0.5.13"
+default-features = false
+features = ["macros", "offline", "migrate"]
+
+[dependencies.rocket_db_pools]
+version = "0.1.0-rc.2"
+features = ["sqlx_sqlite"]
 
 [dependencies.rocket]
 version = "0.5.0-rc.2"

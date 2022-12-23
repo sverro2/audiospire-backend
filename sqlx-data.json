@@ -1,0 +1,31 @@
+{
+  "db": "SQLite",
+  "b312e19e175e2d9c39fba7c19c93bd71ee2084380319b1f9fc5b643b77c60656": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT id FROM projects_v1 WHERE id = ?"
+  },
+  "dac2878789e18321e54a7f5f679b54ecfede4fdb226ce22ca91574047e35e9e0": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "INSERT INTO projects_v1 (id) VALUES (?)"
+  }
+}
